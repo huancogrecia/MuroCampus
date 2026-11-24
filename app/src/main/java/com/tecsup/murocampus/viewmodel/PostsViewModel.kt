@@ -23,6 +23,11 @@ class PostsViewModel(
     private val _usuarioFiltro = MutableStateFlow<Int?>(null)
     val usuarioFiltro = _usuarioFiltro.asStateFlow()
 
+    private val _busquedaQuery = MutableStateFlow("")
+    val busquedaQuery = _busquedaQuery.asStateFlow()
+
+    private var postsObtenidos: List<Post> = emptyList()
+
     private var cargaJob: Job? = null
 
     private val _detalle = MutableStateFlow<UiState<DetalleUi>?>(null)
@@ -51,11 +56,29 @@ class PostsViewModel(
             val resultado = if (userId == null) repo.listar() else repo.porUsuario(userId)
             resultado
                 .onSuccess { posts ->
-                    _lista.value = UiState.Exito(posts)
+                    postsObtenidos = posts
+                    actualizarListaFiltrada()
                 }
                 .onFailure { error ->
                     _lista.value = UiState.Error(mensajeDe(error))
                 }
+        }
+    }
+
+    private fun actualizarListaFiltrada() {
+        val query = _busquedaQuery.value.trim()
+        val filtrados = if (query.isEmpty()) {
+            postsObtenidos
+        } else {
+            postsObtenidos.filter { it.title.contains(query, ignoreCase = true) }
+        }
+        _lista.value = UiState.Exito(filtrados)
+    }
+
+    fun buscar(query: String) {
+        _busquedaQuery.value = query
+        if (_lista.value is UiState.Exito) {
+            actualizarListaFiltrada()
         }
     }
 

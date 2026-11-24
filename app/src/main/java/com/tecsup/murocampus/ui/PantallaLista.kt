@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -36,6 +37,7 @@ fun PantallaLista(
 ) {
     val estado by vm.lista.collectAsStateWithLifecycle()
     val usuarioFiltro by vm.usuarioFiltro.collectAsStateWithLifecycle()
+    val busquedaQuery by vm.busquedaQuery.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -59,9 +61,19 @@ fun PantallaLista(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            OutlinedTextField(
+                value = busquedaQuery,
+                onValueChange = { vm.buscar(it) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                label = { Text("Buscar por título...") },
+                singleLine = true
+            )
+
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 item {
