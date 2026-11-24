@@ -23,7 +23,7 @@ import com.tecsup.murocampus.viewmodel.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaLista(vm: PostsViewModel) {
+fun PantallaLista(vm: PostsViewModel, onAbrirDetalle: (Int) -> Unit) {
     val estado by vm.lista.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -55,7 +55,7 @@ fun PantallaLista(vm: PostsViewModel) {
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(actual.datos, key = { it.id }) { post ->
-                        TarjetaPost(post = post)
+                        TarjetaPost(post = post, onClick = { onAbrirDetalle(post.id) })
                     }
                 }
             }
