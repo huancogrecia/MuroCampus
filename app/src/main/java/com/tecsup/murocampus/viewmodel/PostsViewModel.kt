@@ -3,6 +3,7 @@ package com.tecsup.murocampus.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tecsup.murocampus.data.PostRepository
+import com.tecsup.murocampus.data.mensajeDe
 import com.tecsup.murocampus.model.Comentario
 import com.tecsup.murocampus.model.Post
 import com.tecsup.murocampus.model.NuevoPost
@@ -26,6 +27,8 @@ class PostsViewModel(
 
     private val _detalle = MutableStateFlow<UiState<DetalleUi>?>(null)
     val detalle = _detalle.asStateFlow()
+
+    private var detalleJob: Job? = null
 
     private val _idSeleccionado = MutableStateFlow<Int?>(null)
     val idSeleccionado = _idSeleccionado.asStateFlow()
@@ -62,8 +65,9 @@ class PostsViewModel(
     }
 
     fun abrir(id: Int) {
+        detalleJob?.cancel()
         _idSeleccionado.value = id
-        viewModelScope.launch {
+        detalleJob = viewModelScope.launch {
             _detalle.value = UiState.Cargando
             val (post, comentarios) = coroutineScope {
                 val postDeferred = async { repo.detalle(id) }
@@ -88,6 +92,8 @@ class PostsViewModel(
     }
 
     fun cerrarDetalle() {
+        detalleJob?.cancel()
+        detalleJob = null
         _idSeleccionado.value = null
     }
 

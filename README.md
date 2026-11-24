@@ -101,7 +101,11 @@ Las capturas están en [`evidencias/`](./evidencias/). Cada imagen se puede abri
 - La lista muestra las publicaciones del servicio y el detalle carga cinco comentarios para la publicación 1.
 - El filtro Usuario 2 consulta `posts?userId=2` y devuelve diez publicaciones; Todos vuelve a consultar `posts`.
 - Con campos vacíos, Publicar está deshabilitado. Al enviar, el servicio responde HTTP 201 y la app muestra `Publicado con id 101`.
-- Sin conexión se muestra el mensaje de error y el botón Reintentar.
+- Con modo avión, la lista muestra el mensaje de conexión y Reintentar; al recuperar internet y reintentar, carga las publicaciones.
+- Con el id `9999` puesto temporalmente en el detalle, aparece `Error del servidor (404)`. Se restauró el código después de la comprobación.
+- Al quitar temporalmente `body` del modelo, JSONPlaceholder lo trata como una clave desconocida y la lista carga gracias a `ignoreUnknownKeys`. Al añadir un campo obligatorio que el JSON no envía, aparece `Respuesta inesperada`. Ambos cambios temporales se retiraron.
+- Al abrir un detalle y volver de inmediato, las llamadas se cancelan y la pantalla vuelve a la lista sin excepciones de AndroidRuntime. OkHttp puede registrar la cancelación como una línea informativa.
+- Se revisó `viewmodel/`: no depende de Retrofit, `PostApi` ni `HttpException`; el mapeo de errores está en `data/`.
 
 ## Para pensar
 
