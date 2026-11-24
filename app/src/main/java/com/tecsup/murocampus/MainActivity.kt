@@ -35,8 +35,12 @@ class MainActivity : ComponentActivity() {
                 val mostrarFormulario by viewModel.mostrarFormulario.collectAsStateWithLifecycle()
 
                 BackHandler(enabled = idSeleccionado != null || mostrarFormulario) {
-                    if (idSeleccionado != null) viewModel.cerrarDetalle()
-                    else viewModel.cerrarFormulario()
+                    if (idSeleccionado != null) {
+                        viewModel.limpiarEstadoEliminacion()
+                        viewModel.cerrarDetalle()
+                    } else {
+                        viewModel.cerrarFormulario()
+                    }
                 }
 
                 if (mostrarFormulario) {
@@ -57,8 +61,12 @@ class MainActivity : ComponentActivity() {
                             onReintentar = { viewModel.abrir(idSeleccionado!!) }
                         )
                         is com.tecsup.murocampus.viewmodel.UiState.Exito -> PantallaDetalle(
+                            vm = viewModel,
                             detalle = estado.datos,
-                            onAtras = viewModel::cerrarDetalle
+                            onAtras = {
+                                viewModel.limpiarEstadoEliminacion()
+                                viewModel.cerrarDetalle()
+                            }
                         )
                     }
                 }

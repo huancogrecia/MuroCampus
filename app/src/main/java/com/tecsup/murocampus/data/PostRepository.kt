@@ -5,6 +5,7 @@ import com.tecsup.murocampus.model.Comentario
 import com.tecsup.murocampus.model.NuevoPost
 import com.tecsup.murocampus.model.Post
 import kotlinx.coroutines.CancellationException
+import retrofit2.HttpException
 
 interface PostRepository {
     suspend fun listar(): Result<List<Post>>
@@ -16,6 +17,8 @@ interface PostRepository {
     suspend fun porUsuario(userId: Int): Result<List<Post>>
 
     suspend fun crear(nuevo: NuevoPost): Result<Post>
+
+    suspend fun eliminar(id: Int): Result<Unit>
 }
 
 class PostRepositoryRemote(
@@ -55,6 +58,19 @@ class PostRepositoryRemote(
 
     override suspend fun crear(nuevo: NuevoPost): Result<Post> = try {
         Result.success(api.crear(nuevo))
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
+    override suspend fun eliminar(id: Int): Result<Unit> = try {
+        val response = api.eliminar(id)
+        if (response.isSuccessful) {
+            Result.success(Unit)
+        } else {
+            Result.failure(HttpException(response))
+        }
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {

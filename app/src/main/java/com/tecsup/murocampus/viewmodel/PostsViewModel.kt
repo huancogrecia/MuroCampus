@@ -27,6 +27,7 @@ class PostsViewModel(
     val busquedaQuery = _busquedaQuery.asStateFlow()
 
     private var postsObtenidos: List<Post> = emptyList()
+    private val idsEliminadosLocalmente = mutableSetOf<Int>()
 
     private var cargaJob: Job? = null
 
@@ -44,6 +45,9 @@ class PostsViewModel(
     private val _publicacionCreada = MutableStateFlow<UiState<Post>?>(null)
     val publicacionCreada = _publicacionCreada.asStateFlow()
 
+    private val _eliminacionState = MutableStateFlow<UiState<Unit>?>(null)
+    val eliminacionState = _eliminacionState.asStateFlow()
+
     init {
         cargar()
     }
@@ -56,7 +60,7 @@ class PostsViewModel(
             val resultado = if (userId == null) repo.listar() else repo.porUsuario(userId)
             resultado
                 .onSuccess { posts ->
-                    postsObtenidos = posts
+                    postsObtenidos = posts.filterNot { it.id in idsEliminadosLocalmente }
                     actualizarListaFiltrada()
                 }
                 .onFailure { error ->
@@ -140,6 +144,27 @@ class PostsViewModel(
                     _publicacionCreada.value = UiState.Error(mensajeDe(error))
                 }
         }
+    }
+
+    fun eliminar(id: Int) {
+        viewModelScope.launch {
+            _eliminacionState.value = UiState.Cargando
+            repo.eliminar(id)
+                .onSuccess {
+                    _eliminacionState.value = UiState.Exito(Unit)
+                    idsEliminadosLocalmente += id
+                    postsObtenidos = postsObtenidos.filter { it.id != id }
+                    actualizarListaFiltrada()
+                    cerrarDetalle()
+                }
+                .onFailure { error ->
+                    _eliminacionState.value = UiState.Error(mensajeDe(error))
+                }
+        }
+    }
+
+    fun limpiarEstadoEliminacion() {
+        _eliminacionState.value = null
     }
 }
 
