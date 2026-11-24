@@ -63,27 +63,37 @@ La interfaz solo presenta el estado y comunica acciones. El ViewModel coordina l
 
 ## Evidencias de pantalla
 
-Las capturas están en [`evidencias/`](evidencias/).
+Las capturas están en [`evidencias/`](./evidencias/). Cada imagen se puede abrir en tamaño completo con el enlace debajo.
 
 ### Lista de publicaciones
 
-![Lista de publicaciones](evidencias/lista-publicaciones.png)
+![Lista de publicaciones](./evidencias/lista-publicaciones.png)
+
+[Abrir captura de la lista](./evidencias/lista-publicaciones.png)
 
 ### Detalle y comentarios
 
-![Detalle con comentarios](evidencias/detalle-comentarios.png)
+![Detalle con comentarios](./evidencias/detalle-comentarios.png)
+
+[Abrir captura del detalle](./evidencias/detalle-comentarios.png)
 
 ### Filtro por usuario
 
-![Publicaciones filtradas por usuario 2](evidencias/filtro-usuario-2.png)
+![Publicaciones filtradas por usuario 2](./evidencias/filtro-usuario-2.png)
+
+[Abrir captura del filtro](./evidencias/filtro-usuario-2.png)
 
 ### Crear publicación
 
-![Respuesta de creación con id 101](evidencias/crear-publicacion.png)
+![Respuesta de creación con id 101](./evidencias/crear-publicacion.png)
+
+[Abrir captura de creación](./evidencias/crear-publicacion.png)
 
 ### Error de conexión
 
-![Error de conexión con opción de reintento](evidencias/error-sin-conexion.png)
+![Error de conexión con opción de reintento](./evidencias/error-sin-conexion.png)
+
+[Abrir captura del error de conexión](./evidencias/error-sin-conexion.png)
 
 ## Verificaciones realizadas
 
