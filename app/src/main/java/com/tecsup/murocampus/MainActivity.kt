@@ -12,6 +12,7 @@ import com.tecsup.murocampus.data.PostRepositoryRemote
 import com.tecsup.murocampus.data.remote.RetrofitClient
 import com.tecsup.murocampus.ui.PantallaLista
 import com.tecsup.murocampus.ui.PantallaDetalle
+import com.tecsup.murocampus.ui.PantallaCrear
 import com.tecsup.murocampus.ui.Cargando
 import com.tecsup.murocampus.ui.ErrorConReintento
 import com.tecsup.murocampus.ui.theme.MuroCampus_HuancoTheme
@@ -31,17 +32,22 @@ class MainActivity : ComponentActivity() {
             MuroCampus_HuancoTheme {
                 val detalle by viewModel.detalle.collectAsStateWithLifecycle()
                 val idSeleccionado by viewModel.idSeleccionado.collectAsStateWithLifecycle()
+                val mostrarFormulario by viewModel.mostrarFormulario.collectAsStateWithLifecycle()
 
-                BackHandler(enabled = idSeleccionado != null) {
-                    viewModel.cerrarDetalle()
+                BackHandler(enabled = idSeleccionado != null || mostrarFormulario) {
+                    if (idSeleccionado != null) viewModel.cerrarDetalle()
+                    else viewModel.cerrarFormulario()
                 }
 
-                if (idSeleccionado == null) {
+                if (mostrarFormulario) {
+                    PantallaCrear(vm = viewModel, onAtras = viewModel::cerrarFormulario)
+                } else if (idSeleccionado == null) {
                     PantallaLista(
                         vm = viewModel,
                         onAbrirDetalle = { id ->
                             viewModel.abrir(id)
-                        }
+                        },
+                        onCrear = viewModel::abrirFormulario
                     )
                 } else {
                     when (val estado = detalle) {

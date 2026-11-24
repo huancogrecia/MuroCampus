@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,7 +29,11 @@ import com.tecsup.murocampus.viewmodel.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaLista(vm: PostsViewModel, onAbrirDetalle: (Int) -> Unit) {
+fun PantallaLista(
+    vm: PostsViewModel,
+    onAbrirDetalle: (Int) -> Unit,
+    onCrear: () -> Unit
+) {
     val estado by vm.lista.collectAsStateWithLifecycle()
     val usuarioFiltro by vm.usuarioFiltro.collectAsStateWithLifecycle()
 
@@ -42,6 +47,11 @@ fun PantallaLista(vm: PostsViewModel, onAbrirDetalle: (Int) -> Unit) {
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = onCrear) {
+                Text("+")
+            }
         }
     ) { innerPadding ->
         Column(

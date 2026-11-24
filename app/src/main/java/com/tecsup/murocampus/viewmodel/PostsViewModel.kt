@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tecsup.murocampus.data.PostRepository
 import com.tecsup.murocampus.model.Comentario
 import com.tecsup.murocampus.model.Post
+import com.tecsup.murocampus.model.NuevoPost
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,12 @@ class PostsViewModel(
 
     private val _idSeleccionado = MutableStateFlow<Int?>(null)
     val idSeleccionado = _idSeleccionado.asStateFlow()
+
+    private val _mostrarFormulario = MutableStateFlow(false)
+    val mostrarFormulario = _mostrarFormulario.asStateFlow()
+
+    private val _publicacionCreada = MutableStateFlow<UiState<Post>?>(null)
+    val publicacionCreada = _publicacionCreada.asStateFlow()
 
     init {
         cargar()
@@ -82,6 +89,28 @@ class PostsViewModel(
 
     fun cerrarDetalle() {
         _idSeleccionado.value = null
+    }
+
+    fun abrirFormulario() {
+        _publicacionCreada.value = null
+        _mostrarFormulario.value = true
+    }
+
+    fun cerrarFormulario() {
+        _mostrarFormulario.value = false
+    }
+
+    fun publicar(titulo: String, texto: String) {
+        viewModelScope.launch {
+            _publicacionCreada.value = UiState.Cargando
+            repo.crear(NuevoPost(userId = 1, title = titulo, body = texto))
+                .onSuccess { post ->
+                    _publicacionCreada.value = UiState.Exito(post)
+                }
+                .onFailure { error ->
+                    _publicacionCreada.value = UiState.Error(mensajeDe(error))
+                }
+        }
     }
 }
 
