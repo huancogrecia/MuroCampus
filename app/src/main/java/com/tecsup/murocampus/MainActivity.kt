@@ -1,47 +1,30 @@
 package com.tecsup.murocampus
 
 import android.os.Bundle
+import androidx.lifecycle.ViewModelProvider
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.material3.TopAppBar
+import com.tecsup.murocampus.data.PostRepositoryRemote
+import com.tecsup.murocampus.data.remote.RetrofitClient
+import com.tecsup.murocampus.ui.PantallaLista
 import com.tecsup.murocampus.ui.theme.MuroCampus_HuancoTheme
+import com.tecsup.murocampus.viewmodel.PostsViewModel
+import com.tecsup.murocampus.viewmodel.PostsViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val viewModel = ViewModelProvider(
+            this,
+            PostsViewModelFactory(PostRepositoryRemote(RetrofitClient.api))
+        )[PostsViewModel::class.java]
+
         setContent {
             MuroCampus_HuancoTheme {
-                MuroCampusBase()
+                PantallaLista(vm = viewModel)
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MuroCampusBase() {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = { Text("MuroCampus") }
-            )
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        )
     }
 }
